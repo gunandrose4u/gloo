@@ -15,9 +15,7 @@ jobs:
           command: |
             mkdir build
             cd build
-            cmake ../ \
-              -DCMAKE_VERBOSE_MAKEFILE=ON \
-              -DUSE_LIBUV=ON
+            cmake ..
             msbuild ALL_BUILD.vcxproj
 
   build:
