@@ -10,8 +10,10 @@ jobs:
       shell: cmd.exe
     steps:
       - checkout
+      - run: systeminfo
       - run:
           name: Build
+          shell: cmd.exe
           command: |
             mkdir build
             cd build
