@@ -15,7 +15,10 @@ jobs:
           command: |
             mkdir build
             cd build
+            where cmake
             cmake ..
+            dir
+            where msbuild
             msbuild ALL_BUILD.vcxproj
 
   build:
