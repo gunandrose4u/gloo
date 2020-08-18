@@ -8,7 +8,7 @@ executors:
     machine:
       resource_class: windows.medium
       image: windows-server-2019-vs2019:stable
-      shell: cmd.exe
+      shell: bash.exe
 
 jobs:
   windows_build:
@@ -20,12 +20,14 @@ jobs:
       - run:
           name: Build
           command: |
-            echo test
+            eval "$('/C/tools/miniconda3/Scripts/conda.exe' 'shell.bash' 'hook')"
+            conda create -n py376_build python=3.7.6
+            conda activate py376_build
+            conda install cmake
             mkdir build
             cd build
             cmake ..
-            dir
-            msbuild ALL_BUILD.vcxproj
+
 
   build:
     parameters:
