@@ -4,6 +4,22 @@ orbs:
   win: circleci/windows@2.2.0
 
 jobs:
+  windows_build:
+    executor:
+      name: win/default
+      shell: cmd.exe
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: |
+            mkdir build
+            cd build
+            cmake ../ \
+              -DCMAKE_VERBOSE_MAKEFILE=ON \
+              -DUSE_LIBUV=ON
+            msbuild ALL_BUILD.vcxproj
+
   build:
     parameters:
       docker_image:
@@ -91,15 +107,10 @@ jobs:
             build/gloo/test/gloo_test --gtest_filter="-$EXCLUDE"
 
 workflows:
-  win_build:
-      executor:
-        name: win/default
-      steps:
-        - run:
-          command: echo hello & echo world
-          shell: cmd.exe
   build:
     jobs:
+      - windows_build:
+          name: windows_build
       - build:
           name: gcc5
           docker_image: ubuntu:18.04
