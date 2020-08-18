@@ -3,24 +3,28 @@ version: 2.1
 orbs:
   win: circleci/windows@2.2.0
 
+executors:
+  windows-cpu:
+    machine:
+      resource_class: windows.medium
+      image: windows-server-2019-vs2019:stable
+      shell: cmd.exe
+
 jobs:
   windows_build:
     executor:
-      name: win/default
-      shell: cmd.exe
+      name: windows-cpu
     steps:
       - checkout
       - run: systeminfo
       - run:
           name: Build
-          shell: cmd.exe
           command: |
+            echo test
             mkdir build
             cd build
-            where cmake
             cmake ..
             dir
-            where msbuild
             msbuild ALL_BUILD.vcxproj
 
   build:
