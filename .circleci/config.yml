@@ -17,6 +17,11 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Test
+          command: |
+            PATH=$PATH:"C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin"
+            which msbuild.exe
+      - run:
           name: Build
           command: |
             git submodule sync
@@ -28,7 +33,7 @@ jobs:
             mkdir build
             cd build
             cmake ..
-            make
+            msbuild.exe ALL_BUILD.vcxproj
 
   build:
     parameters:
