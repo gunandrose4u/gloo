@@ -155,3 +155,4 @@ workflows:
     jobs:
       - windows_build:
           name: windows_build
+          gtest_lib_path: c:/googletest
