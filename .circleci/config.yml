@@ -56,7 +56,7 @@ jobs:
               -DGTEST_LIBRARY=<< parameters.gtest_lib_path >>/lib/gtestd.lib \
               -DGTEST_INCLUDE_DIR=<< parameters.gtest_lib_path >>/include \
               -DGTEST_MAIN_LIBRARY=<< parameters.gtest_lib_path >>/lib/gtest_maind.lib
-            msbuild ALL_BUILD.vcxproj
+            msbuild.exe ALL_BUILD.vcxproj
       - run:
           name: Test
           command: |
