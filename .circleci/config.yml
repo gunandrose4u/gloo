@@ -60,7 +60,8 @@ jobs:
       - run:
           name: Test
           command: |
-            build/gloo/test/gloo_test
+            ls -R -l
+            build/gloo/test/Debug/gloo_test.exe
 
   build:
     parameters:
