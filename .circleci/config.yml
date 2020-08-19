@@ -12,18 +12,39 @@ executors:
 
 jobs:
   windows_build:
+    parameters:
+      gtest_lib_path:
+        type: string
+        default: ""
     executor:
       name: windows-cpu
     steps:
       - checkout
       - run:
-          name: Test
+          name: Set MSBuild
           command: |
             PATH=$PATH:"C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin"
-            which msbuild.exe
+            which MSBuild.exe
+      - run:
+          name: Install googletest
+          command: |
+            wget \
+              -q \
+              -O googletest-release-1.10.0.tar.gz \
+              https://github.com/google/googletest/archive/release-1.10.0.tar.gz
+            tar xf googletest-release-1.10.0.tar.gz
+            cd googletest-release-1.10.0
+            mkdir -p build
+            cd build
+            mkdir << parameters.gtest_lib_path >>
+            cmake .. \
+              -DCMAKE_INSTALL_PREFIX=<< parameters.gtest_lib_path >> \
+              -Dgtest_force_shared_crt=ON
+            msbuild.exe INSTALL.vcxproj
       - run:
           name: Build
           command: |
+            PATH=$PATH:"C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin"
             git submodule sync
             git submodule update --init --recursive
             eval "$('/C/tools/miniconda3/Scripts/conda.exe' 'shell.bash' 'hook')"
@@ -32,8 +53,16 @@ jobs:
             conda install cmake
             mkdir build
             cd build
-            cmake ..
-            msbuild.exe ALL_BUILD.vcxproj
+            cmake .. \
+              -DBUILD_TEST=ON \
+              -DGTEST_LIBRARY=<< parameters.gtest_lib_path >>/lib/gtestd.lib \
+              -DGTEST_INCLUDE_DIR=<< parameters.gtest_lib_path >>/include \
+              -DGTEST_MAIN_LIBRARY=<< parameters.gtest_lib_path >>/lib/gtest_maind.lib
+            msbuild ALL_BUILD.vcxproj
+      - run:
+          name: Test
+          command: |
+            build/gloo/test/gloo_test
 
   build:
     parameters:
